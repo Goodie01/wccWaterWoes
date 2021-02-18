@@ -2,11 +2,11 @@ package org.goodiemania.wcc.waterWoes.application;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
 import org.goodiemania.wcc.waterWoes.application.downloader.Downloader;
-import org.goodiemania.wcc.waterWoes.application.extractor.TextExtractor;
+import org.goodiemania.wcc.waterWoes.application.text.extractor.TextExtractor;
 import org.goodiemania.wcc.waterWoes.application.site.DriverSupplier;
 import org.goodiemania.wcc.waterWoes.application.site.Scrapper;
+import org.goodiemania.wcc.waterWoes.application.text.processor.TextProcessor;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
@@ -17,13 +17,15 @@ public class Main {
         Scrapper scrapper = new Scrapper(startingUrl, new DriverSupplier());
         Downloader downloader = new Downloader();
         TextExtractor textExtractor = new TextExtractor();
+        TextProcessor textProcessor = new TextProcessor();
+
 
         String s = "https://wellington.govt.nz/-/media/your-council/meetings/council/2020/december/2020-12-16-minutes-council.pdf";
         InputStream inputStream = downloader.downloadFile(s).orElseThrow();
 
         String extractedText = textExtractor.extract(inputStream).orElseThrow();
+        List<String> strings = textProcessor.extractLines(extractedText);
 
-        System.out.println(extractedText);
 
         /*scrapper.start()
             .parallelStream()
